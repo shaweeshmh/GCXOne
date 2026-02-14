@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const testimonials = [
@@ -30,24 +30,59 @@ const testimonials = [
   },
 ];
 
+const slideVariantsLight = {
+  enter: (direction: number) => ({
+    x: direction > 0 ? 24 : -24,
+    opacity: 0,
+  }),
+  center: { x: 0, opacity: 1 },
+  exit: (direction: number) => ({
+    x: direction > 0 ? -24 : 24,
+    opacity: 0,
+  }),
+};
+
 const slideVariants = {
   enter: (direction: number) => ({
     x: direction > 0 ? 80 : -80,
     opacity: 0,
   }),
-  center: {
-    x: 0,
-    opacity: 1,
-  },
+  center: { x: 0, opacity: 1 },
   exit: (direction: number) => ({
     x: direction > 0 ? -80 : 80,
     opacity: 0,
   }),
 };
 
+function usePrefersReducedMotion() {
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+  useEffect(() => {
+    const m = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setPrefersReducedMotion(m.matches);
+    const fn = () => setPrefersReducedMotion(m.matches);
+    m.addEventListener("change", fn);
+    return () => m.removeEventListener("change", fn);
+  }, []);
+  return prefersReducedMotion;
+}
+
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const m = window.matchMedia("(max-width: 640px)");
+    setIsMobile(m.matches);
+    const fn = () => setIsMobile(m.matches);
+    m.addEventListener("change", fn);
+    return () => m.removeEventListener("change", fn);
+  }, []);
+  return isMobile;
+}
+
 export function Testimonials() {
   const [index, setIndex] = useState(0);
   const [direction, setDirection] = useState(0);
+  const prefersReducedMotion = usePrefersReducedMotion();
+  const isMobile = useIsMobile();
 
   const goTo = useCallback((next: number) => {
     setDirection(next > index ? 1 : -1);
@@ -65,11 +100,17 @@ export function Testimonials() {
   }, []);
 
   useEffect(() => {
+    if (prefersReducedMotion) return;
     const t = setInterval(goNext, 6000);
     return () => clearInterval(t);
-  }, [goNext]);
+  }, [goNext, prefersReducedMotion]);
 
   const t = testimonials[index];
+  const variants = isMobile || prefersReducedMotion ? slideVariantsLight : slideVariants;
+  const transition = useMemo(
+    () => (isMobile || prefersReducedMotion ? { duration: 0.22, ease: "easeOut" as const } : { duration: 0.35, ease: "easeOut" as const }),
+    [isMobile, prefersReducedMotion]
+  );
 
   return (
     <section className="relative py-20 sm:py-28 px-4 sm:px-6 lg:px-8 overflow-hidden">
@@ -78,13 +119,13 @@ export function Testimonials() {
         className="absolute inset-0 bg-gradient-to-br from-gcx-slate/80 via-gcx-dark to-gcx-slate/60"
         aria-hidden
       />
-      {/* big blur orbs for depth */}
-      <div className="absolute top-0 left-1/4 w-[400px] h-[400px] rounded-full bg-gcx-gold/15 blur-[120px] -translate-y-1/2 pointer-events-none" aria-hidden />
-      <div className="absolute bottom-0 right-1/4 w-[320px] h-[320px] rounded-full bg-gcx-amber/10 blur-[100px] translate-y-1/2 pointer-events-none" aria-hidden />
-      <div className="absolute top-1/2 right-0 w-[280px] h-[280px] rounded-full bg-slate-500/10 blur-[80px] -translate-y-1/2 translate-x-1/2 pointer-events-none" aria-hidden />
-      {/* diagonal stripes */}
+      {/* blur orbs: hidden on mobile to avoid GPU lag */}
+      <div className="absolute top-0 left-1/4 w-[400px] h-[400px] rounded-full bg-gcx-gold/15 blur-[120px] -translate-y-1/2 pointer-events-none max-sm:hidden" aria-hidden />
+      <div className="absolute bottom-0 right-1/4 w-[320px] h-[320px] rounded-full bg-gcx-amber/10 blur-[100px] translate-y-1/2 pointer-events-none max-sm:hidden" aria-hidden />
+      <div className="absolute top-1/2 right-0 w-[280px] h-[280px] rounded-full bg-slate-500/10 blur-[80px] -translate-y-1/2 translate-x-1/2 pointer-events-none max-sm:hidden" aria-hidden />
+      {/* decorative layers: hidden on small screens to reduce paint */}
       <div
-        className="absolute inset-0 opacity-[0.04] pointer-events-none"
+        className="absolute inset-0 opacity-[0.04] pointer-events-none max-sm:hidden"
         style={{
           backgroundImage: `repeating-linear-gradient(
             -55deg,
@@ -96,25 +137,22 @@ export function Testimonials() {
         }}
         aria-hidden
       />
-      {/* dot grid */}
       <div
-        className="absolute inset-0 opacity-[0.06] pointer-events-none"
+        className="absolute inset-0 opacity-[0.06] pointer-events-none max-sm:hidden"
         style={{
           backgroundImage: `radial-gradient(circle at 1px 1px, rgba(184,134,43,0.7) 1px, transparent 0)`,
           backgroundSize: "40px 40px",
         }}
         aria-hidden
       />
-      {/* darken edges so card pops */}
       <div
-        className="absolute inset-0 pointer-events-none"
+        className="absolute inset-0 pointer-events-none max-sm:hidden"
         style={{
           background: `radial-gradient(ellipse 70% 50% at 50% 45%, transparent 0%, transparent 40%, rgba(12,12,15,0.4) 100%)`,
         }}
         aria-hidden
       />
-      {/* bit of light at top */}
-      <div className="absolute inset-x-0 top-0 h-1/3 bg-gradient-to-b from-gcx-gold/10 to-transparent pointer-events-none" aria-hidden />
+      <div className="absolute inset-x-0 top-0 h-1/3 bg-gradient-to-b from-gcx-gold/10 to-transparent pointer-events-none max-sm:hidden" aria-hidden />
       <div className="relative max-w-4xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -140,11 +178,11 @@ export function Testimonials() {
               <motion.blockquote
                 key={t.id}
                 custom={direction}
-                variants={slideVariants}
+                variants={variants}
                 initial="enter"
                 animate="center"
                 exit="exit"
-                transition={{ duration: 0.35, ease: "easeOut" }}
+                transition={transition}
                 className="absolute inset-0 flex flex-col bg-gcx-card/90 border border-white/10 rounded-2xl p-8 sm:p-10 shadow-xl"
               >
                 <span className="text-5xl sm:text-6xl text-gcx-gold/30 font-serif leading-none select-none">
