@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useCallback, useEffect, useMemo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useCallback, useEffect } from "react";
+import { motion } from "framer-motion";
 
 const testimonials = [
   {
@@ -30,30 +30,6 @@ const testimonials = [
   },
 ];
 
-const slideVariantsLight = {
-  enter: (direction: number) => ({
-    x: direction > 0 ? 24 : -24,
-    opacity: 0,
-  }),
-  center: { x: 0, opacity: 1 },
-  exit: (direction: number) => ({
-    x: direction > 0 ? -24 : 24,
-    opacity: 0,
-  }),
-};
-
-const slideVariants = {
-  enter: (direction: number) => ({
-    x: direction > 0 ? 80 : -80,
-    opacity: 0,
-  }),
-  center: { x: 0, opacity: 1 },
-  exit: (direction: number) => ({
-    x: direction > 0 ? -80 : 80,
-    opacity: 0,
-  }),
-};
-
 function usePrefersReducedMotion() {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   useEffect(() => {
@@ -66,64 +42,40 @@ function usePrefersReducedMotion() {
   return prefersReducedMotion;
 }
 
-function useIsMobile() {
-  const [isMobile, setIsMobile] = useState(false);
-  useEffect(() => {
-    const m = window.matchMedia("(max-width: 640px)");
-    setIsMobile(m.matches);
-    const fn = () => setIsMobile(m.matches);
-    m.addEventListener("change", fn);
-    return () => m.removeEventListener("change", fn);
-  }, []);
-  return isMobile;
-}
+const AUTO_ADVANCE_MS = 6000;
 
 export function Testimonials() {
   const [index, setIndex] = useState(0);
-  const [direction, setDirection] = useState(0);
   const prefersReducedMotion = usePrefersReducedMotion();
-  const isMobile = useIsMobile();
 
-  const goTo = useCallback((next: number) => {
-    setDirection(next > index ? 1 : -1);
-    setIndex(next);
-  }, [index]);
+  const goNext = useCallback(() => {
+    setIndex((i) => (i === testimonials.length - 1 ? 0 : i + 1));
+  }, []);
 
   const goPrev = useCallback(() => {
-    setDirection(-1);
     setIndex((i) => (i === 0 ? testimonials.length - 1 : i - 1));
   }, []);
 
-  const goNext = useCallback(() => {
-    setDirection(1);
-    setIndex((i) => (i === testimonials.length - 1 ? 0 : i + 1));
+  const goTo = useCallback((next: number) => {
+    setIndex(next);
   }, []);
 
   useEffect(() => {
     if (prefersReducedMotion) return;
-    const t = setInterval(goNext, 6000);
+    const t = setInterval(goNext, AUTO_ADVANCE_MS);
     return () => clearInterval(t);
-  }, [goNext, prefersReducedMotion]);
+  }, [index, goNext, prefersReducedMotion]);
 
-  const t = testimonials[index];
-  const variants = isMobile || prefersReducedMotion ? slideVariantsLight : slideVariants;
-  const transition = useMemo(
-    () => (isMobile || prefersReducedMotion ? { duration: 0.22, ease: "easeOut" as const } : { duration: 0.35, ease: "easeOut" as const }),
-    [isMobile, prefersReducedMotion]
-  );
+  const slideWidthPercent = 100 / testimonials.length;
 
   return (
     <section className="relative py-20 sm:py-28 px-4 sm:px-6 lg:px-8 overflow-hidden">
-      {/* base gradient */}
       <div
         className="absolute inset-0 bg-gradient-to-br from-gcx-slate/80 via-gcx-dark to-gcx-slate/60"
         aria-hidden
       />
-      {/* blur orbs: hidden on mobile to avoid GPU lag */}
       <div className="absolute top-0 left-1/4 w-[400px] h-[400px] rounded-full bg-gcx-gold/15 blur-[120px] -translate-y-1/2 pointer-events-none max-sm:hidden" aria-hidden />
       <div className="absolute bottom-0 right-1/4 w-[320px] h-[320px] rounded-full bg-gcx-amber/10 blur-[100px] translate-y-1/2 pointer-events-none max-sm:hidden" aria-hidden />
-      <div className="absolute top-1/2 right-0 w-[280px] h-[280px] rounded-full bg-slate-500/10 blur-[80px] -translate-y-1/2 translate-x-1/2 pointer-events-none max-sm:hidden" aria-hidden />
-      {/* decorative layers: hidden on small screens to reduce paint */}
       <div
         className="absolute inset-0 opacity-[0.04] pointer-events-none max-sm:hidden"
         style={{
@@ -172,47 +124,49 @@ export function Testimonials() {
         </motion.div>
 
         <div className="relative">
-          {/* slide area, overflow hidden for animation */}
-          <div className="relative min-h-[280px] sm:min-h-[260px] flex items-stretch justify-center">
-            <AnimatePresence mode="wait" custom={direction}>
-              <motion.blockquote
-                key={t.id}
-                custom={direction}
-                variants={variants}
-                initial="enter"
-                animate="center"
-                exit="exit"
-                transition={transition}
-                className="absolute inset-0 flex flex-col bg-gcx-card/90 border border-white/10 rounded-2xl p-8 sm:p-10 shadow-xl"
-              >
-                <span className="text-5xl sm:text-6xl text-gcx-gold/30 font-serif leading-none select-none">
-                  &ldquo;
-                </span>
-                <p className="text-slate-200 text-lg sm:text-xl leading-relaxed -mt-6 flex-1">
-                  {t.quote}
-                </p>
-                <div className="flex items-center gap-4 mt-6 pt-6 border-t border-white/5">
-                  <div className="w-12 h-12 rounded-full bg-gcx-gold/20 flex items-center justify-center text-gcx-gold font-semibold text-sm shrink-0 ring-2 ring-gcx-gold/30">
-                    {t.avatar}
+          <div className="relative min-h-[280px] sm:min-h-[260px] overflow-hidden">
+            <div
+              className="flex h-full"
+              style={{
+                width: `${testimonials.length * 100}%`,
+                transform: `translate3d(-${index * slideWidthPercent}%, 0, 0)`,
+                transition: "transform 0.3s ease-out",
+              }}
+            >
+              {testimonials.map((t) => (
+                <blockquote
+                  key={t.id}
+                  className="flex flex-col flex-shrink-0 bg-gcx-card/90 border border-white/10 rounded-2xl p-8 sm:p-10 shadow-xl min-h-[280px] sm:min-h-[260px] pr-6 sm:pr-8"
+                  style={{ width: `${slideWidthPercent}%` }}
+                >
+                  <span className="text-5xl sm:text-6xl text-gcx-gold/30 font-serif leading-none select-none">
+                    &ldquo;
+                  </span>
+                  <p className="text-slate-200 text-lg sm:text-xl leading-relaxed -mt-6 flex-1">
+                    {t.quote}
+                  </p>
+                  <div className="flex items-center gap-4 mt-6 pt-6 border-t border-white/5">
+                    <div className="w-12 h-12 rounded-full bg-gcx-gold/20 flex items-center justify-center text-gcx-gold font-semibold text-sm shrink-0 ring-2 ring-gcx-gold/30">
+                      {t.avatar}
+                    </div>
+                    <div className="min-w-0">
+                      <cite className="not-italic font-semibold text-white block">
+                        {t.author}
+                      </cite>
+                      <p className="text-slate-500 text-sm truncate">{t.role}</p>
+                    </div>
                   </div>
-                  <div className="min-w-0">
-                    <cite className="not-italic font-semibold text-white block">
-                      {t.author}
-                    </cite>
-                    <p className="text-slate-500 text-sm truncate">{t.role}</p>
-                  </div>
-                </div>
-              </motion.blockquote>
-            </AnimatePresence>
+                </blockquote>
+              ))}
+            </div>
           </div>
 
-          {/* prev/next buttons */}
           <div className="flex items-center justify-center gap-6 mt-10">
             <button
               type="button"
               onClick={goPrev}
               aria-label="Previous testimonial"
-              className="flex items-center justify-center w-12 h-12 rounded-xl border border-white/15 bg-white/[0.03] text-slate-400 hover:border-gcx-gold/40 hover:bg-gcx-gold/10 hover:text-gcx-gold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gcx-gold/50 focus:ring-offset-2 focus:ring-offset-gcx-dark"
+              className="flex items-center justify-center w-12 h-12 rounded-xl border border-white/15 bg-white/[0.03] text-slate-400 hover:border-gcx-gold/40 hover:bg-gcx-gold/10 hover:text-gcx-gold transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gcx-gold/50 focus:ring-offset-2 focus:ring-offset-gcx-dark active:scale-95"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
                 <path d="M15 18l-6-6 6-6" />
@@ -237,7 +191,7 @@ export function Testimonials() {
               type="button"
               onClick={goNext}
               aria-label="Next testimonial"
-              className="flex items-center justify-center w-12 h-12 rounded-xl border border-white/15 bg-white/[0.03] text-slate-400 hover:border-gcx-gold/40 hover:bg-gcx-gold/10 hover:text-gcx-gold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gcx-gold/50 focus:ring-offset-2 focus:ring-offset-gcx-dark"
+              className="flex items-center justify-center w-12 h-12 rounded-xl border border-white/15 bg-white/[0.03] text-slate-400 hover:border-gcx-gold/40 hover:bg-gcx-gold/10 hover:text-gcx-gold transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gcx-gold/50 focus:ring-offset-2 focus:ring-offset-gcx-dark active:scale-95"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
                 <path d="M9 18l6-6-6-6" />
