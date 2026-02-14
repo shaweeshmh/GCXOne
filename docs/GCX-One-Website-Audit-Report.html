@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GCX One Website Audit & Solutions Page Report</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      line-height: 1.5;
+      color: #1a1a1a;
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 2rem;
+      font-size: 11pt;
+    }
+    @media print {
+      body { padding: 1rem; }
+      .no-print { display: none !important; }
+    }
+    .no-print {
+      background: #f0f4f8;
+      padding: 0.75rem 1rem;
+      margin-bottom: 1.5rem;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      color: #334155;
+    }
+    h1 {
+      font-size: 1.5rem;
+      margin: 0 0 0.5rem 0;
+      border-bottom: 2px solid #1a1a1a;
+      padding-bottom: 0.25rem;
+    }
+    h2 {
+      font-size: 1.15rem;
+      margin: 1.5rem 0 0.5rem 0;
+      color: #1a1a1a;
+    }
+    p { margin: 0.5rem 0; }
+    strong { font-weight: 600; }
+    hr {
+      border: none;
+      border-top: 1px solid #cbd5e1;
+      margin: 1.25rem 0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0.75rem 0;
+      font-size: 10pt;
+    }
+    th, td {
+      border: 1px solid #cbd5e1;
+      padding: 0.5rem 0.75rem;
+      text-align: left;
+    }
+    th { background: #f1f5f9; font-weight: 600; }
+    ul { margin: 0.5rem 0; padding-left: 1.25rem; }
+    li { margin: 0.25rem 0; }
+    .meta { color: #475569; margin-bottom: 1rem; font-size: 10pt; }
+    .footer { margin-top: 2rem; font-size: 10pt; color: #64748b; font-style: italic; }
+    code { background: #f1f5f9; padding: 0.1em 0.35em; border-radius: 3px; font-size: 0.95em; }
+  </style>
+</head>
+<body>
+  <p class="no-print">To save as PDF: open in Chrome or Edge → File → Print → "Save as PDF". Turn off "Headers and footers" in the print dialog so the file path does not appear at the bottom.</p>
+
+  <h1>GCX One Website Audit & Solutions Page Report</h1>
+  <p class="meta"><strong>Date:</strong> February 2025<br />
+  <strong>Scope:</strong> GCX One (www.gcxone.com), the new Solutions page I built, and next steps</p>
+  <hr />
+
+  <h2>1. Summary</h2>
+  <p>I audited the GCX One site and built a new <strong>Solutions page</strong> in Next.js/React: four solution areas, pricing comparison, lead form, and testimonials, aligned with the brand (enterprise security, NXGEN Technology AG, 10+ countries). You get a modern stack (Next.js 14, TypeScript, Tailwind, Framer Motion), SEO metadata, responsive layout, and basic accessibility. Below is what I looked at, what’s on the page, and what I recommend.</p>
+  <hr />
+
+  <h2>2. Brand & Current Site</h2>
+  <p><strong>Brand:</strong> Advanced enterprise security and surveillance (cameras/sensors, monitored sites, events per 24h, false alarm filtering). “Trusted by companies from 10+ countries.” NXGEN Technology AG, Zurich. Professional B2B tone.</p>
+  <p><strong>Current site strengths:</strong> Clear nav (About, Support, Resources, Tower Guard), good entry paths (Breakthroughs, Job Functions, Core Benefits, Solution Kits), support and resources, footer with legal and contact. Free Trial and Market Place are visible.</p>
+  <hr />
+
+  <h2>3. What’s on the Solutions Page</h2>
+  <table>
+    <thead>
+      <tr><th>Part</th><th>What it does</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Hero</td><td>Headline, subcopy, CTAs, nav with Free Trial</td></tr>
+      <tr><td>Solution cards (4)</td><td>Intelligent Surveillance, Monitored Sites, Event Analytics, AI False Alarm Filtering; each with description and feature bullets</td></tr>
+      <tr><td>Pricing</td><td>Starter / Professional / Enterprise; feature lists, monthly/annual toggle, comparison table</td></tr>
+      <tr><td>Lead form</td><td>First name, last name, email, company (required), message (optional); validation and success state</td></tr>
+      <tr><td>Testimonials</td><td>Three quote cards with author, role, initials</td></tr>
+      <tr><td>Footer</td><td>Brand, Terms, Privacy, Home</td></tr>
+    </tbody>
+  </table>
+  <p>Next.js 14 (App Router), TypeScript, Tailwind, Framer Motion. Responsive, semantic HTML, metadata for SEO.</p>
+  <hr />
+
+  <h2>4. SEO</h2>
+  <p>Root layout and Solutions page each have title, description, keywords, and OG tags. When you connect to gcxone.com, set a canonical URL and hreflang if you’re multi-language. Structured data (Organization, WebPage, FAQ if you add one) will improve SERP snippets.</p>
+  <hr />
+
+  <h2>5. What to Do Next</h2>
+  <p><strong>Main site:</strong> (1) Add a clear “Solutions” or “Product” nav link to this page or an adapted version. (2) Reuse “10+ countries” and add logos/case snippets where you can. (3) One strong headline above the fold for who it’s for and the main benefit. (4) Clarify pricing (e.g. “Contact for pricing” + comparison). (5) Prominent contact/demo form or link to this page’s form, with leads going to CRM/sales.</p>
+  <p><strong>This build:</strong> (1) Wire the form to an API, CRM, or email; add privacy/consent if needed (e.g. GDPR). (2) Add analytics (GA4/GTM) for CTAs, form submits, scroll depth. (3) A/B test headlines and CTA copy. (4) Optional: short FAQ and links to Support; later, a Resources/Use cases section. (5) Keep dependencies light and use Next.js image optimization; lazy-load if you add a lot of content.</p>
+  <p><strong>Journey:</strong> Awareness via SEO and content; solution cards and pricing for consideration; lead form (and Free Trial) for conversion; confirmation and follow-up to close the loop.</p>
+  <hr />
+
+  <h2>6. Deliverables</h2>
+  <table>
+    <thead>
+      <tr><th>Item</th><th>Status</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>GitHub repo (Next.js project)</td><td>Done; push <code>gcxone-solutions</code> when ready</td></tr>
+      <tr><td>Live deploy (Vercel/Netlify)</td><td>Steps in README</td></tr>
+      <tr><td>README + setup</td><td>In repo root</td></tr>
+    </tbody>
+  </table>
+  <hr />
+
+  <p class="footer">Prepared as part of the GCX One feature build and audit. Setup and deployment: see the repo README.</p>
+</body>
+</html>

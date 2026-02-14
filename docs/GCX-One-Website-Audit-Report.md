@@ -17,8 +17,6 @@ I audited the GCX One site and built a new **Solutions page** in Next.js/React: 
 
 **Current site strengths:** Clear nav (About, Support, Resources, Tower Guard), good entry paths (Breakthroughs, Job Functions, Core Benefits, Solution Kits), support and resources, footer with legal and contact. Free Trial and Market Place are visible.
 
-**Why the new page:** The main site lacked one place that spells out the four pillars with benefits and features. I added that plus pricing (plan cards and comparison table), a validated lead form, and testimonials. The page is fast, responsive, and SEO-ready so you can link from gcxone.com or use a subdomain.
-
 ---
 
 ## 3. What’s on the Solutions Page
