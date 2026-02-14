@@ -1,0 +1,1 @@
+export { SolutionsFooter } from "./SolutionsFooter";
