@@ -10,8 +10,10 @@ const plans = [
     id: "starter",
     name: "Starter",
     description: "For small sites and teams",
-    price: "Custom",
-    period: "Contact us",
+    priceMonthly: "Custom",
+    priceAnnual: "Custom",
+    periodMonthly: "per month",
+    periodAnnual: "per year",
     features: [
       "Up to 50 cameras/sensors",
       "Up to 5 monitored sites",
@@ -25,8 +27,10 @@ const plans = [
     id: "professional",
     name: "Professional",
     description: "For growing operations",
-    price: "Custom",
-    period: "Contact us",
+    priceMonthly: "Custom",
+    priceAnnual: "Custom",
+    periodMonthly: "per month",
+    periodAnnual: "per year",
     features: [
       "Up to 200 cameras/sensors",
       "Up to 20 monitored sites",
@@ -41,8 +45,10 @@ const plans = [
     id: "enterprise",
     name: "Enterprise",
     description: "For large-scale deployment",
-    price: "Custom",
-    period: "Contact us",
+    priceMonthly: "Custom",
+    priceAnnual: "Custom",
+    periodMonthly: "per month",
+    periodAnnual: "per year",
     features: [
       "Unlimited cameras/sensors",
       "Unlimited sites",
@@ -143,8 +149,12 @@ export function PricingTable() {
               <h3 className="text-lg font-semibold text-white">{plan.name}</h3>
               <p className="text-slate-400 text-sm mt-1">{plan.description}</p>
               <div className="mt-4 mb-6">
-                <span className="text-2xl font-bold text-white">{plan.price}</span>
-                <span className="text-slate-500 text-sm ml-1">{plan.period}</span>
+                <span className="text-2xl font-bold text-white">
+                  {billingPeriod === "annual" ? plan.priceAnnual : plan.priceMonthly}
+                </span>
+                <span className="text-slate-500 text-sm ml-1">
+                  {billingPeriod === "annual" ? plan.periodAnnual : plan.periodMonthly}
+                </span>
               </div>
               <ul className="space-y-3 flex-1">
                 {plan.features.map((f) => (
