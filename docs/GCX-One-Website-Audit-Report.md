@@ -57,8 +57,6 @@ Root layout and Solutions page each have title, description, keywords, and OG ta
 | Item | Status |
 |------|--------|
 | GitHub repo (Next.js project) | Done; push `gcxone-solutions` when ready |
-| Live deploy (Vercel/Netlify) | Steps in README |
-| PDF of this report | Export from editor, or `npx md-to-pdf docs/GCX-One-Website-Audit-Report.md`, or paste into Docs/Word → PDF |
 | README + setup | In repo root |
 
 ---
