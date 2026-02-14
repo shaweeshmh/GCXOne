@@ -10,8 +10,8 @@ const plans = [
     id: "starter",
     name: "Starter",
     description: "For small sites and teams",
-    priceMonthly: "Custom",
-    priceAnnual: "Custom",
+    priceMonthly: "$99",
+    priceAnnual: "$990",
     periodMonthly: "per month",
     periodAnnual: "per year",
     features: [
@@ -27,8 +27,8 @@ const plans = [
     id: "professional",
     name: "Professional",
     description: "For growing operations",
-    priceMonthly: "Custom",
-    priceAnnual: "Custom",
+    priceMonthly: "$249",
+    priceAnnual: "$2,490",
     periodMonthly: "per month",
     periodAnnual: "per year",
     features: [
@@ -45,10 +45,10 @@ const plans = [
     id: "enterprise",
     name: "Enterprise",
     description: "For large-scale deployment",
-    priceMonthly: "Custom",
+    priceMonthly: "$999",
     priceAnnual: "Custom",
     periodMonthly: "per month",
-    periodAnnual: "per year",
+    periodAnnual: "Contact us",
     features: [
       "Unlimited cameras/sensors",
       "Unlimited sites",
@@ -148,13 +148,20 @@ export function PricingTable() {
               )}
               <h3 className="text-lg font-semibold text-white">{plan.name}</h3>
               <p className="text-slate-400 text-sm mt-1">{plan.description}</p>
-              <div className="mt-4 mb-6">
-                <span className="text-2xl font-bold text-white">
-                  {billingPeriod === "annual" ? plan.priceAnnual : plan.priceMonthly}
-                </span>
-                <span className="text-slate-500 text-sm ml-1">
-                  {billingPeriod === "annual" ? plan.periodAnnual : plan.periodMonthly}
-                </span>
+              <div className="mt-5 mb-6">
+                <div className="flex items-baseline gap-2 flex-wrap">
+                  <span className={`text-2xl sm:text-3xl font-bold tracking-tight ${plan.highlighted ? "bg-gcx-gradient-gold bg-clip-text text-transparent" : "text-white"}`}>
+                    {billingPeriod === "annual" ? plan.priceAnnual : plan.priceMonthly}
+                  </span>
+                  <span className="text-slate-500 text-sm font-medium">
+                    {billingPeriod === "annual" ? plan.periodAnnual : plan.periodMonthly}
+                  </span>
+                </div>
+                {billingPeriod === "annual" && plan.priceAnnual !== "Custom" && (
+                  <p className="text-gcx-gold/90 text-xs font-medium mt-1.5">
+                    Save when you pay yearly
+                  </p>
+                )}
               </div>
               <ul className="space-y-3 flex-1">
                 {plan.features.map((f) => (
